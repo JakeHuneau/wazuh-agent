@@ -50,6 +50,7 @@ pushd src
 pushd build
 make install -j $(nproc)
 sed -i "s|WAZUH_HOME|/usr/local/bin|g" %{buildroot}%{_localstatedir}/usr/lib/systemd/system/wazuh-agent.service
+cp /usr/local/gcc-13.2.0/lib64/libstdc++.so.6 %{buildroot}%{_localstatedir}/usr/local/lib
 exit 0
 
 %pre
@@ -80,6 +81,9 @@ fi
 if [ $1 = 1 ]; then
   systemctl daemon-reload
   systemctl enable wazuh-agent
+  touch /etc/ld.so.conf.d/wazuh-agentlibs.conf
+  echo "/usr/local/lib" >> /etc/ld.so.conf.d/wazuh-agentlibs.conf
+  sudo ldconfig
 fi
 
 ## SCA RELATED
@@ -232,6 +236,7 @@ if [ $1 = 0 ]; then
     rm -f %{_localstatedir}usr/lib/systemd/system/wazuh-agent.service
     rm -f %{_localstatedir}usr/local/lib/libdbsync.so
     rm -f %{_localstatedir}usr/local/lib/libsysinfo.so
+    rm -f %{_localstatedir}usr/local/lib/libstdc++.so.6
     rm -rf %{_localstatedir}etc/wazuh-agent
     rm -rf %{_localstatedir}var/wazuh-agent
   fi
@@ -250,6 +255,7 @@ rm -fr %{buildroot}
 %attr(750, root, wazuh) %{_localstatedir}usr/lib/systemd/system/wazuh-agent.service
 %attr(750, root, wazuh) %{_localstatedir}usr/local/lib/libdbsync.so
 %attr(750, root, wazuh) %{_localstatedir}usr/local/lib/libsysinfo.so
+%attr(750, root, wazuh) %{_localstatedir}usr/local/lib/libstdc++.so.6
 %dir %attr(770, root, wazuh) %{_localstatedir}etc/wazuh-agent
 %dir %attr(750, root, wazuh) %{_localstatedir}var/wazuh-agent
 
