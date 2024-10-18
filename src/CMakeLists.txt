@@ -39,7 +39,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(BIN_INSTALL_DIR "/usr/local/bin") 
     set(CONFIG_INSTALL_DIR "/etc/wazuh-agent")
     set(SERVICE_INSTALL_DIR "/usr/lib/systemd/system")
-    set(DATA_INSTALL_DIR "/var/wazuh-agent") 
+    set(DATA_INSTALL_DIR "/var/wazuh-agent")
+    set(LIB_INSTALL_DIR "/usr/local/lib")  
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(BIN_INSTALL_DIR "/usr/local/bin")  
     set(CONFIG_INSTALL_DIR "/etc/wazuh-agent")
@@ -67,6 +68,10 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     #    COMMAND sed "s|WAZUH_HOME|${INSTALL_ROOT}${BIN_INSTALL_DIR}|g" agent/service/wazuh-agent.service > ${CMAKE_BINARY_DIR}/wazuh-agent.service)
     install(FILES agent/service/wazuh-agent.service
         DESTINATION ${INSTALL_ROOT}${SERVICE_INSTALL_DIR})
+    install(FILES 
+        ${CMAKE_BINARY_DIR}/lib/libdbsync.so
+        ${CMAKE_BINARY_DIR}/lib/libsysinfo.so
+        DESTINATION ${INSTALL_ROOT}${LIB_INSTALL_DIR})
 endif()
 
 if(BUILD_TESTS)

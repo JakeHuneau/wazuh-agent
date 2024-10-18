@@ -230,6 +230,8 @@ if [ $1 = 0 ]; then
     # Remove lingering folders and files
     rm -f %{_localstatedir}usr/local/bin/wazuh-agent
     rm -f %{_localstatedir}usr/lib/systemd/system/wazuh-agent.service
+    rm -f %{_localstatedir}usr/local/lib/libdbsync.so
+    rm -f %{_localstatedir}usr/local/lib/libsysinfo.so
     rm -rf %{_localstatedir}etc/wazuh-agent
     rm -rf %{_localstatedir}var/wazuh-agent
   fi
@@ -246,6 +248,8 @@ rm -fr %{buildroot}
 %defattr(-,root,root)
 %attr(750, root, wazuh) %{_localstatedir}usr/local/bin/wazuh-agent
 %attr(750, root, wazuh) %{_localstatedir}usr/lib/systemd/system/wazuh-agent.service
+%attr(750, root, wazuh) %{_localstatedir}usr/local/lib/libdbsync.so
+%attr(750, root, wazuh) %{_localstatedir}usr/local/lib/libsysinfo.so
 %dir %attr(770, root, wazuh) %{_localstatedir}etc/wazuh-agent
 %dir %attr(750, root, wazuh) %{_localstatedir}var/wazuh-agent
 
