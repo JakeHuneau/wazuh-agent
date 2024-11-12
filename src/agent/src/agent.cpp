@@ -36,6 +36,9 @@ Agent::Agent(const std::string& configFile, std::unique_ptr<ISignalHandler> sign
         [this](const std::string& groupId, const std::string& destinationPath)
         { return m_communicator.GetGroupConfigurationFromManager(groupId, destinationPath); });
 
+    m_centralizedConfiguration.ValidateFileFunction([this](const std::filesystem::path& fileToValidate)
+                                                    { return m_configurationParser.isValidYamlFile(fileToValidate); });
+
     m_taskManager.Start(std::thread::hardware_concurrency());
 }
 
