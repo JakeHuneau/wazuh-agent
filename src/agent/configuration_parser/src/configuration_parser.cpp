@@ -76,7 +76,7 @@ namespace configuration
         }
     }
 
-    unsigned long ConfigurationParser::ParseTimeUnit(const std::string& option)
+    time_t ConfigurationParser::ParseTimeUnit(const std::string& option) const
     {
         std::string number;
         unsigned int multiplier = 1;
@@ -117,6 +117,6 @@ namespace configuration
             throw std::invalid_argument("Invalid time unit: " + option);
         }
 
-        return static_cast<unsigned long>(std::stoul(number) * multiplier);
+        return static_cast<time_t>(std::stoul(number) * multiplier);
     }
 } // namespace configuration

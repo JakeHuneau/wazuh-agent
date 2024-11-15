@@ -4,6 +4,7 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <ctime>
 #include <exception>
 #include <filesystem>
 #include <optional>
@@ -21,6 +22,16 @@ namespace configuration
     private:
         /// @brief Holds the parsed YAML configuration.
         YAML::Node m_config;
+
+        /// @brief Converts a time unit represented as a string to an time_t value (ms).
+        /// @param option A string representing a time unit.
+        /// @return The corresponding time_t value.
+        /// @throws std::invalid_argument if the string does not represent a valid time unit.
+        /// @details This function parses a string representing a time unit and returns the equivalent time_t
+        /// value. The time unit can be expressed in milliseconds (e.g. "1ms"), seconds (e.g. "1s"), minutes (e.g.
+        /// "1m"), hours (e.g. "1h"), or days (e.g. "1d"). If no unit is specified, the value is assumed to be in
+        /// seconds.
+        time_t ParseTimeUnit(const std::string& option) const;
 
     public:
         /// @brief Default constructor. Loads configuration from a default file path.
@@ -76,14 +87,25 @@ namespace configuration
             }
         }
 
-        /// @brief Converts a time unit represented as a string to an unsigned long value (ms).
-        /// @param option A string representing a time unit.
-        /// @return The corresponding unsigned long value.
-        /// @throws std::invalid_argument if the string does not represent a valid time unit.
-        /// @details This function parses a string representing a time unit and returns the equivalent unsigned long
-        /// value. The time unit can be expressed in milliseconds (e.g. "1ms"), seconds (e.g. "1s"), minutes (e.g.
-        /// "1m"), hours (e.g. "1h"), or days (e.g. "1d"). If no unit is specified, the value is assumed to be in
-        /// seconds.
-        unsigned long ParseTimeUnit(const std::string& option);
+        /// @brief Retrieves a configuration value as a time_t by following a sequence of nested keys.
+        /// @tparam Keys Variadic template parameters representing the hierarchical path to the desired value.
+        /// @param keys A sequence of keys to locate the configuration value within the YAML structure.
+        /// @return The configuration value as a time_t corresponding to the specified keys or std::nullopt.
+        /// @details This method attempts to retrieve a string configuration value using the provided keys and
+        /// converts it to a time_t. If the value is not found or cannot be converted, std::nullopt is returned.
+        template<std::time_t, typename... Keys>
+        std::optional<time_t> GetConfig(Keys... keys) const
+        {
+            auto option = GetConfig<std::string>(keys...);
+
+            if (!option.has_value())
+            {
+                return std::nullopt;
+            }
+            else
+            {
+                return ParseTimeUnit(option.value());
+            }
+        }
     };
 } // namespace configuration
