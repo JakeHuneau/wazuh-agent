@@ -67,4 +67,7 @@ private:
 
     /// @brief Centralized configuration
     centralized_configuration::CentralizedConfiguration m_centralizedConfiguration;
+
+    /// @brief Maximum batch size
+    int m_maxBatchingSize = config::agent::DEFAULT_MAX_BATCHING_SIZE;
 };

@@ -10,6 +10,8 @@
 #include <memory>
 #include <thread>
 
+constexpr int A_SECOND_IN_MILLIS = 1000;
+
 Agent::Agent(const std::string& configFile, std::unique_ptr<ISignalHandler> signalHandler)
     : m_agentInfo([this]() { return m_sysInfo.os(); }, [this]() { return m_sysInfo.networks(); })
     , m_messageQueue(std::make_shared<MultiTypeQueue>())
@@ -27,6 +29,13 @@ Agent::Agent(const std::string& configFile, std::unique_ptr<ISignalHandler> sign
                       m_configurationParser,
                       [this](std::function<void()> task) { m_taskManager.EnqueueTask(std::move(task)); })
 {
+    m_maxBatchingSize = m_configurationParser.GetConfig<int>("agent", "max_batching_size")
+                            .value_or(config::agent::DEFAULT_MAX_BATCHING_SIZE);
+
+    if (m_maxBatchingSize < A_SECOND_IN_MILLIS) {
+        LogWarn("max_batching_size cannot be lower than 1s. Using default value.");
+        m_maxBatchingSize = config::agent::DEFAULT_MAX_BATCHING_SIZE;
+    }
     m_centralizedConfiguration.SetGroupIdFunction([this](const std::vector<std::string>& groups)
                                                   { return m_agentInfo.SetGroups(groups); });
 

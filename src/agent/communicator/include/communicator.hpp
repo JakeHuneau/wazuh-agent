@@ -56,6 +56,14 @@ namespace communicator
 
             m_retryInterval = getConfigValue.template operator()<std::time_t>("agent", "retry_interval")
                                   .value_or(config::agent::DEFAULT_RETRY_INTERVAL);
+
+            m_batchingInterval = getConfigValue.template operator()<std::time_t>("agent", "batching_interval")
+                                    .value_or(config::agent::DEFAULT_BATCHING_INTERVAL);
+
+            if (m_batchingInterval == 0) {
+                LogWarn("batching_interval must be greater than zero. Using default value.");
+                m_batchingInterval = config::agent::DEFAULT_BATCHING_INTERVAL;
+            }
         }
 
         /// @brief Waits for the authentication token to expire and authenticates again
@@ -114,6 +122,9 @@ namespace communicator
 
         /// @brief Time between authentication attemps in case of failure
         std::time_t m_retryInterval = 1;
+
+        /// @brief Time between batching requests
+        std::time_t m_batchingInterval = config::agent::DEFAULT_BATCHING_INTERVAL;
 
         /// @brief The server URL
         std::string m_serverUrl;

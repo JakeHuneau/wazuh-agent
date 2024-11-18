@@ -10,6 +10,9 @@ namespace config
         constexpr auto DEFAULT_SERVER_URL = "@DEFAULT_SERVER_URL@";
         constexpr auto DEFAULT_REGISTRATION_URL = "@DEFAULT_REGISTRATION_URL@";
         constexpr auto DEFAULT_RETRY_INTERVAL = @DEFAULT_RETRY_INTERVAL@;
+        constexpr auto DEFAULT_BATCHING_INTERVAL = @DEFAULT_BATCHING_INTERVAL@;
+        constexpr auto DEFAULT_MAX_BATCHING_SIZE = @DEFAULT_MAX_BATCHING_SIZE@;
+
     }
 
     namespace logcollector
