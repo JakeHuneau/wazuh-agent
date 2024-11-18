@@ -3,17 +3,11 @@
 
 #include <vector>
 
-namespace
-{
-    // This should eventually be replaced with a configuration parameter.
-    constexpr int NUM_EVENTS = 1;
-} // namespace
-
 boost::asio::awaitable<std::string> GetMessagesFromQueue(std::shared_ptr<IMultiTypeQueue> multiTypeQueue,
-                                                         MessageType messageType,
+                                                         MessageType messageType, int numEvents,
                                                          std::function<std::string()> getMetadataInfo)
 {
-    const auto messages = co_await multiTypeQueue->getNextNAwaitable(messageType, NUM_EVENTS, "", "");
+    const auto messages = co_await multiTypeQueue->getNextNAwaitable(messageType, numEvents, "", "");
 
     std::string output;
 
@@ -30,9 +24,9 @@ boost::asio::awaitable<std::string> GetMessagesFromQueue(std::shared_ptr<IMultiT
     co_return output;
 }
 
-void PopMessagesFromQueue(std::shared_ptr<IMultiTypeQueue> multiTypeQueue, MessageType messageType)
+void PopMessagesFromQueue(std::shared_ptr<IMultiTypeQueue> multiTypeQueue, MessageType messageType, int numEvents)
 {
-    multiTypeQueue->popN(messageType, NUM_EVENTS);
+    multiTypeQueue->popN(messageType, numEvents);
 }
 
 void PushCommandsToQueue(std::shared_ptr<IMultiTypeQueue> multiTypeQueue, const std::string& commands)

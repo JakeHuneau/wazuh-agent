@@ -75,6 +75,7 @@ namespace http_client
                                       std::function<boost::asio::awaitable<std::string>()> messageGetter,
                                       std::function<void()> onUnauthorized,
                                       std::time_t connectionRetry,
+                                      std::time_t batchingInterval,
                                       std::function<void(const std::string&)> onSuccess,
                                       std::function<bool()> loopRequestCondition)
     {
@@ -86,7 +87,7 @@ namespace http_client
 
         do
         {
-            long timerSleep = A_SECOND_IN_MILLIS;
+            long timerSleep = batchingInterval;
 
             auto socket = m_socketFactory->Create(executor, reqParams.Use_Https);
 

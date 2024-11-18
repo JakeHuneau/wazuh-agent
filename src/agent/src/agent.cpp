@@ -64,19 +64,19 @@ void Agent::Run()
         [this]()
         {
             return GetMessagesFromQueue(
-                m_messageQueue, MessageType::STATEFUL, [this]() { return m_agentInfo.GetMetadataInfo(false); });
+                m_messageQueue, MessageType::STATEFUL, m_maxBatchingSize, [this]() { return m_agentInfo.GetMetadataInfo(false); });
         },
         [this]([[maybe_unused]] const std::string& response)
-        { PopMessagesFromQueue(m_messageQueue, MessageType::STATEFUL); }));
+        { PopMessagesFromQueue(m_messageQueue, MessageType::STATEFUL, m_maxBatchingSize); }));
 
     m_taskManager.EnqueueTask(m_communicator.StatelessMessageProcessingTask(
         [this]()
         {
             return GetMessagesFromQueue(
-                m_messageQueue, MessageType::STATELESS, [this]() { return m_agentInfo.GetMetadataInfo(false); });
+                m_messageQueue, MessageType::STATELESS, m_maxBatchingSize, [this]() { return m_agentInfo.GetMetadataInfo(false); });
         },
         [this]([[maybe_unused]] const std::string& response)
-        { PopMessagesFromQueue(m_messageQueue, MessageType::STATELESS); }));
+        { PopMessagesFromQueue(m_messageQueue, MessageType::STATELESS, m_maxBatchingSize); }));
 
     m_moduleManager.AddModules();
     m_taskManager.EnqueueTask([this]() { m_moduleManager.Start(); });
