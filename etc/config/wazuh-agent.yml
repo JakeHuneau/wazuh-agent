@@ -2,6 +2,8 @@ agent:
   server_url: https://localhost:27000
   registration_url: https://localhost:55000
   retry_interval: 30s
+  batching_interval: 10s
+  max_batching_size: 1000
 inventory:
   enabled: true
   interval: 1h

@@ -10,6 +10,10 @@ set(DEFAULT_REGISTRATION_URL "https://localhost:55000" CACHE STRING "Default Age
 
 set(DEFAULT_RETRY_INTERVAL 30000 CACHE STRING "Default Agent retry interval (30s)")
 
+set(DEFAULT_BATCHING_INTERVAL 10000 CACHE STRING "Default Agent batching interval (10s)")
+
+set(DEFAULT_MAX_BATCHING_SIZE 1000 CACHE STRING "Default Agent batching size limit (1000)")
+
 set(DEFAULT_LOGCOLLECTOR_ENABLED true CACHE BOOL "Default Logcollector enabled")
 
 set(BUFFER_SIZE 4096 CACHE STRING "Default Logcollector reading buffer size")
