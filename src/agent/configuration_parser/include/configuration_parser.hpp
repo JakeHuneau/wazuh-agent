@@ -34,18 +34,38 @@ namespace configuration
         /// seconds.
         std::time_t ParseTimeUnit(const std::string& option) const;
 
+        /// @brief The groups infromation
+        std::function<std::vector<std::string>()> m_getGroups;
+
+        /// @brief Merges two YAML nodes, modifying the base node to include or override values from the
+        /// override node.
+        ///
+        /// This function traverses the two YAML nodes. If a key exists in both nodes:
+        /// - If both values are maps, the function recurses to merge their content.
+        /// - If both values are sequences, their elements are concatenated.
+        /// - In all other cases (scalars, aliases, null values), the value from the override node replaces the value in
+        /// the base node. If a key only exists in the override node, it is added to the base node.
+        ///
+        /// @param base Reference to the base YAML::Node that will be modified.
+        /// @param override Const reference to the YAML::Node containing values to merge into the base.
+        void MergeYamlNodes(YAML::Node& base, const YAML::Node& override);
+
     public:
         /// @brief Default constructor. Loads configuration from a default file path.
         ///
         /// Calls the constructor that accepts a file path, using the default configuration file name.
         /// If the file cannot be loaded, it falls back to default configuration values.
-        ConfigurationParser();
+        ///
+        /// @param getGroups Function to retrieve group ids.
+        ConfigurationParser(std::function<std::vector<std::string>()> getGroups = nullptr);
 
         /// @brief Constructs a ConfigurationParser and loads the configuration from a specified YAML file.
         /// @param configFile The path to the YAML configuration file.
+        /// @param getGroups Function to retrieve group ids.
         /// @details This constructor attempts to load configuration data from the specified file path.
         /// If loading fails, it logs an error and falls back to a set of predefined default values.
-        ConfigurationParser(const std::filesystem::path& configFile);
+        ConfigurationParser(const std::filesystem::path& configFile,
+                            std::function<std::vector<std::string>()> getGroups = nullptr);
 
         /// @brief Constructs a ConfigurationParser from a YAML-formatted string.
         /// @param stringToParse A string containing YAML data to parse.
@@ -103,5 +123,13 @@ namespace configuration
         /// @param configFile The path to the YAML file to be validated.
         /// @return `true` if the file is a valid YAML file; `false` otherwise.
         bool isValidYamlFile(const std::filesystem::path& configFile) const;
+
+        /// @brief Loads shared configuration files for specific groups and merges them into the main configuration.
+        ///
+        /// This function attempts to load configuration files for each group from a shared directory.
+        /// The loaded configurations are merged into the main configuration.
+        ///
+        /// @throws YAML::Exception If there is an error while loading or parsing a YAML file.
+        void LoadSharedConfig();
     };
 } // namespace configuration

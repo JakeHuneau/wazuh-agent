@@ -14,8 +14,10 @@ Agent::Agent(const std::string& configFile, std::unique_ptr<ISignalHandler> sign
     : m_agentInfo([this]() { return m_sysInfo.os(); }, [this]() { return m_sysInfo.networks(); })
     , m_messageQueue(std::make_shared<MultiTypeQueue>())
     , m_signalHandler(std::move(signalHandler))
-    , m_configurationParser(configFile.empty() ? configuration::ConfigurationParser()
-                                               : configuration::ConfigurationParser(std::filesystem::path(configFile)))
+    , m_configurationParser(configFile.empty()
+                                ? configuration::ConfigurationParser([this]() { return m_agentInfo.GetGroups(); })
+                                : configuration::ConfigurationParser(std::filesystem::path(configFile),
+                                                                     [this]() { return m_agentInfo.GetGroups(); }))
     , m_communicator(
           std::make_unique<http_client::HttpClient>(),
           m_agentInfo.GetUUID(),
