@@ -5,6 +5,11 @@ namespace config
     constexpr auto PROJECT_NAME = "@PROJECT_NAME@";
     constexpr auto VERSION = "@VERSION@";
 
+    namespace path
+    {
+        constexpr auto SHARED_CONFIG_DIR = "@SHARED_CONFIG_DIR@";
+    }
+
     namespace agent
     {
         constexpr auto DEFAULT_SERVER_URL = "@DEFAULT_SERVER_URL@";
