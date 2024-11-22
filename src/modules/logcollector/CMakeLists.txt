@@ -45,6 +45,7 @@ target_link_libraries(Logcollector
     nlohmann_json::nlohmann_json
     PRIVATE
     Logger
+    SignalDispatcher
 )
 
 include(../../cmake/ConfigureTarget.cmake)

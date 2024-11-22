@@ -19,6 +19,10 @@
         "version>=": "1.85.0"
       },
       {
+        "name": "boost-signals2",
+        "version>=": "1.85.0"
+      },
+      {
         "name": "cjson",
         "version>=": "1.7.17"
       },

@@ -131,5 +131,8 @@ namespace configuration
         ///
         /// @throws YAML::Exception If there is an error while loading or parsing a YAML file.
         void LoadSharedConfig();
+
+        /// @brief Method for loading the new available configuration and notifying the modules
+        void ReloadConfiguration();
     };
 } // namespace configuration

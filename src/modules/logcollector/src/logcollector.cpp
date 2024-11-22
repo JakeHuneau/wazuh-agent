@@ -4,6 +4,7 @@
 #include <boost/asio/co_spawn.hpp>
 #include <boost/asio/detached.hpp>
 #include <config.h>
+#include <signal_dispatcher.hpp>
 
 #include <chrono>
 #include <iomanip>
@@ -32,6 +33,8 @@ void Logcollector::Setup(const configuration::ConfigurationParser& configuration
     m_enabled = configurationParser.GetConfig<bool>("logcollector", "enabled").value_or(config::logcollector::DEFAULT_ENABLED);
 
     SetupFileReader(configurationParser);
+
+    signal_dispatcher::SignalDispatcher::GetInstance().RegisterListener("update_configuration", [this]() { ReloadConfiguration(); });
 }
 
 void Logcollector::SetupFileReader(const configuration::ConfigurationParser& configurationParser) {
@@ -112,4 +115,8 @@ void Logcollector::AddReader(std::shared_ptr<IReader> reader) {
 
 Awaitable Logcollector::Wait(std::chrono::milliseconds ms) {
     co_await boost::asio::steady_timer(m_ioContext, ms).async_wait(boost::asio::use_awaitable);
+}
+
+void Logcollector::ReloadConfiguration() {
+    LogInfo("ReloadConfiguration.");
 }

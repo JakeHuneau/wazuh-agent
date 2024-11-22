@@ -70,6 +70,9 @@ public:
         return s_instance;
     }
 
+    /// @brief Method for loading the new available configuration
+    void ReloadConfiguration();
+
 protected:
     /// @brief Constructor
     Logcollector() { }

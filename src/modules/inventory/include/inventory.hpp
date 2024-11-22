@@ -41,6 +41,7 @@ class Inventory {
                     const std::string& normalizerConfigPath,
                     const std::string& normalizerType);
         virtual void SendDeltaEvent(const std::string& data);
+        void ReloadConfiguration();
 
     private:
         Inventory();

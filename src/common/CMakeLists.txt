@@ -17,6 +17,7 @@ add_subdirectory(sqliteWrapper)
 add_subdirectory(time_op)
 add_subdirectory(utils)
 add_subdirectory(version_op)
+add_subdirectory(signal_dispatcher)
 
 if(BUILD_TESTS)
     enable_testing()

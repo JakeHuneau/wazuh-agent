@@ -5,6 +5,7 @@
 #include <defs.h>
 #include <logger.hpp>
 #include <sysInfo.hpp>
+#include <signal_dispatcher.hpp>
 
 
 void Inventory::Start() {
@@ -50,6 +51,8 @@ void Inventory::Setup(const configuration::ConfigurationParser& configurationPar
     m_portsAll = configurationParser.GetConfig<bool>("inventory", "ports_all").value_or(config::inventory::DEFAULT_PORTS_ALL);
     m_processes = configurationParser.GetConfig<bool>("inventory", "processes").value_or(config::inventory::DEFAULT_PROCESSES);
     m_hotfixes = configurationParser.GetConfig<bool>("inventory", "hotfixes").value_or(config::inventory::DEFAULT_HOTFIXES);
+
+    signal_dispatcher::SignalDispatcher::GetInstance().RegisterListener("update_configuration", [this]() { ReloadConfiguration(); });
 }
 
 void Inventory::Stop() {
@@ -128,4 +131,9 @@ cJSON * Inventory::Dump() const
 void Inventory::LogErrorInventory(const std::string& log)
 {
     LogError("{}", log.c_str());
+}
+
+void Inventory::ReloadConfiguration()
+{
+    LogInfo("ReloadConfiguration.");
 }

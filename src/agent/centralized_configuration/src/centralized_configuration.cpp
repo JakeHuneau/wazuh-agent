@@ -1,6 +1,7 @@
 #include <centralized_configuration.hpp>
 #include <config.h>
 #include <logger.hpp>
+#include <signal_dispatcher.hpp>
 
 #include <filesystem>
 
@@ -109,7 +110,7 @@ namespace centralized_configuration
                 }
             }
 
-            // TODO apply configuration
+            signal_dispatcher::SignalDispatcher::GetInstance().Notify("new_shared_configuration");
 
             co_return module_command::CommandExecutionResult {module_command::Status::SUCCESS, messageOnSuccess};
         }

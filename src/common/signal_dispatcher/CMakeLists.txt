@@ -3,19 +3,19 @@ cmake_minimum_required(VERSION 3.22)
 set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/../../vcpkg/scripts/buildsystems/vcpkg.cmake")
 set(VCPKG_MANIFEST_DIR ${CMAKE_SOURCE_DIR}/../../)
 
-project(ConfigurationParser)
+project(SignalDispatcher)
 
 include(../../cmake/CommonSettings.cmake)
 set_common_settings()
 
-find_package(yaml-cpp CONFIG REQUIRED)
+find_package(Boost REQUIRED COMPONENTS signals2)
 
-add_library(ConfigurationParser src/configuration_parser.cpp)
-target_include_directories(ConfigurationParser PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(ConfigurationParser PUBLIC yaml-cpp::yaml-cpp Logger SignalDispatcher)
+add_library(SignalDispatcher src/signal_dispatcher.cpp)
+target_include_directories(SignalDispatcher PUBLIC include)
+target_link_libraries(SignalDispatcher PUBLIC Boost::signals2)
 
 include(../../cmake/ConfigureTarget.cmake)
-configure_target(ConfigurationParser)
+configure_target(SignalDispatcher)
 
 if(BUILD_TESTS)
     enable_testing()

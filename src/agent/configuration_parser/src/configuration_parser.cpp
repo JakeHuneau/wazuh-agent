@@ -2,6 +2,8 @@
 
 #include <algorithm>
 #include <cctype>
+#include <signal_dispatcher.hpp>
+
 #include <queue>
 #include <utility>
 
@@ -61,6 +63,9 @@ namespace configuration
         {
             m_config = YAML::LoadFile(configFile.string());
             LoadSharedConfig();
+
+            signal_dispatcher::SignalDispatcher::GetInstance().RegisterListener("new_shared_configuration",
+                                                                                [this]() { ReloadConfiguration(); });
         }
         catch (const std::exception& e)
         {
@@ -222,6 +227,13 @@ namespace configuration
             LogWarn("Load shared configuration failed: {}", e.what());
             throw;
         }
+    }
+
+    void ConfigurationParser::ReloadConfiguration()
+    {
+        LogInfo("ReloadConfiguration.");
+
+        signal_dispatcher::SignalDispatcher::GetInstance().Notify("update_configuration");
     }
 
 } // namespace configuration

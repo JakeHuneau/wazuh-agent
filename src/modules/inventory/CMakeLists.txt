@@ -56,6 +56,7 @@ target_link_libraries(Inventory
     PRIVATE
     Logger
     cjson
+    SignalDispatcher
 )
 
 include(../../cmake/ConfigureTarget.cmake)
