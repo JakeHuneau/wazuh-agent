@@ -74,7 +74,7 @@ namespace configuration
     }
 
     ConfigurationParser::ConfigurationParser(std::function<std::vector<std::string>()> getGroups)
-        : ConfigurationParser(std::filesystem::path(CONFIG_FILE_NAME), getGroups)
+        : ConfigurationParser(std::filesystem::path(CONFIG_FILE_NAME), std::move(getGroups))
     {
     }
 
@@ -153,7 +153,7 @@ namespace configuration
     {
         // Queue to manage nodes to be merged. Pairs of nodes are handled directly.
         std::queue<std::pair<YAML::Node, YAML::Node>> nodesToProcess;
-        nodesToProcess.push({base, override});
+        nodesToProcess.emplace(base, override);
 
         while (!nodesToProcess.empty())
         {
@@ -163,7 +163,7 @@ namespace configuration
             // Traverse each key-value pair in the override node.
             for (auto it = overrideNode.begin(); it != overrideNode.end(); ++it)
             {
-                const std::string key = it->first.as<std::string>();
+                const auto key = it->first.as<std::string>();
                 YAML::Node value = it->second;
 
                 if (baseNode[key])
@@ -172,7 +172,7 @@ namespace configuration
                     if (value.IsMap() && baseNode[key].IsMap())
                     {
                         // Both values are maps: enqueue for further merging.
-                        nodesToProcess.push({baseNode[key], value});
+                        nodesToProcess.emplace(baseNode[key], value);
                     }
                     else if (value.IsSequence() && baseNode[key].IsSequence())
                     {
